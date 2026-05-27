@@ -1,122 +1,147 @@
 import 'package:flutter/material.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'screens/auth_screen.dart';
+import 'screens/home_screen.dart';
 
-void main() {
-  runApp(const MyApp());
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  await Supabase.initialize(
+    url: 'https://ggzdxvoiwcbzwsvryoun.supabase.co',
+    anonKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdnemR4dm9pd2NiendzdnJ5b3VuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg0MjA4OTUsImV4cCI6MjA5Mzk5Njg5NX0.gI-bfLg-lD8CoZmCU5wzinabPItDF-u-K8t67Lqxm2c',
+  );
+
+  final prefs = await SharedPreferences.getInstance();
+  final String userId = prefs.getString('user_id') ?? '';
+  final bool isDark = prefs.getBool('dark_mode') ?? false;
+  final String lang = prefs.getString('language') ?? 'ar';
+
+  runApp(MyApp(
+    isLoggedIn: userId.isNotEmpty,
+    isDark: isDark,
+    language: lang,
+  ));
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+final supabase = Supabase.instance.client;
 
-  // This widget is the root of your application.
+// Global key للتحكم في التطبيق
+final GlobalKey<_MyAppState> myAppKey = GlobalKey<_MyAppState>();
+
+class MyApp extends StatefulWidget {
+  final bool isLoggedIn;
+  final bool isDark;
+  final String language;
+
+  const MyApp({
+    super.key,
+    required this.isLoggedIn,
+    required this.isDark,
+    required this.language,
+  });
+
+  static _MyAppState? of(BuildContext context) =>
+      context.findAncestorStateOfType<_MyAppState>();
+
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  late bool isDark;
+  late String language;
+
+  @override
+  void initState() {
+    super.initState();
+    isDark = widget.isDark;
+    language = widget.language;
+  }
+
+  Future<void> toggleDark(bool value) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool('dark_mode', value);
+    setState(() => isDark = value);
+  }
+
+  Future<void> toggleLanguage(String lang) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('language', lang);
+    setState(() => language = lang);
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: language == 'ar' ? 'يوميتي - ون شيفت' : 'Yawmiyti - One Shift',
+      debugShowCheckedModeBanner: false,
+      themeMode: isDark ? ThemeMode.dark : ThemeMode.light,
       theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // TRY THIS: Try running your application with "flutter run". You'll see
-        // the application has a purple toolbar. Then, without quitting the app,
-        // try changing the seedColor in the colorScheme below to Colors.green
-        // and then invoke "hot reload" (save your changes or press the "hot
-        // reload" button in a Flutter-supported IDE, or press "r" if you used
-        // the command line to start the app).
-        //
-        // Notice that the counter didn't reset back to zero; the application
-        // state is not lost during the reload. To reset the state, use hot
-        // restart instead.
-        //
-        // This works for code too, not just values: Most code changes can be
-        // tested with just a hot reload.
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-      ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
-    );
-  }
-}
-
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
-
-  // This widget is the home page of your application. It is stateful, meaning
-  // that it has a State object (defined below) that contains fields that affect
-  // how it looks.
-
-  // This class is the configuration for the state. It holds the values (in this
-  // case the title) provided by the parent (in this case the App widget) and
-  // used by the build method of the State. Fields in a Widget subclass are
-  // always marked "final".
-
-  final String title;
-
-  @override
-  State<MyHomePage> createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
-
-  void _incrementCounter() {
-    setState(() {
-      // This call to setState tells the Flutter framework that something has
-      // changed in this State, which causes it to rerun the build method below
-      // so that the display can reflect the updated values. If we changed
-      // _counter without calling setState(), then the build method would not be
-      // called again, and so nothing would appear to happen.
-      _counter++;
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    // This method is rerun every time setState is called, for instance as done
-    // by the _incrementCounter method above.
-    //
-    // The Flutter framework has been optimized to make rerunning build methods
-    // fast, so that you can just rebuild anything that needs updating rather
-    // than having to individually change instances of widgets.
-    return Scaffold(
-      appBar: AppBar(
-        // TRY THIS: Try changing the color here to a specific color (to
-        // Colors.amber, perhaps?) and trigger a hot reload to see the AppBar
-        // change color while the other colors stay the same.
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        // Here we take the value from the MyHomePage object that was created by
-        // the App.build method, and use it to set our appbar title.
-        title: Text(widget.title),
-      ),
-      body: Center(
-        // Center is a layout widget. It takes a single child and positions it
-        // in the middle of the parent.
-        child: Column(
-          // Column is also a layout widget. It takes a list of children and
-          // arranges them vertically. By default, it sizes itself to fit its
-          // children horizontally, and tries to be as tall as its parent.
-          //
-          // Column has various properties to control how it sizes itself and
-          // how it positions its children. Here we use mainAxisAlignment to
-          // center the children vertically; the main axis here is the vertical
-          // axis because Columns are vertical (the cross axis would be
-          // horizontal).
-          //
-          // TRY THIS: Invoke "debug painting" (choose the "Toggle Debug Paint"
-          // action in the IDE, or press "p" in the console), to see the
-          // wireframe for each widget.
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            const Text('You have pushed the button this many times:'),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headlineMedium,
-            ),
-          ],
+        fontFamily: 'Cairo',
+        brightness: Brightness.light,
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: const Color(0xFF002366),
+          brightness: Brightness.light,
         ),
+        scaffoldBackgroundColor: const Color(0xFFF0F4F8),
+        appBarTheme: const AppBarTheme(
+          backgroundColor: Color(0xFF002366),
+          foregroundColor: Colors.white,
+        ),
+        switchTheme: SwitchThemeData(
+          thumbColor: WidgetStateProperty.resolveWith((states) {
+            if (states.contains(WidgetState.selected)) {
+              return const Color(0xFF002366);
+            }
+            return Colors.grey;
+          }),
+          trackColor: WidgetStateProperty.resolveWith((states) {
+            if (states.contains(WidgetState.selected)) {
+              return const Color(0xFF002366).withOpacity(0.5);
+            }
+            return Colors.grey.withOpacity(0.3);
+          }),
+        ),
+        useMaterial3: true,
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
+      darkTheme: ThemeData(
+        fontFamily: 'Cairo',
+        brightness: Brightness.dark,
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: const Color(0xFF002366),
+          brightness: Brightness.dark,
+          surface: const Color(0xFF1A1A2E),
+          onSurface: Colors.white,
+        ),
+        scaffoldBackgroundColor: const Color(0xFF0F0F1A),
+        cardColor: const Color(0xFF1E1E30),
+        appBarTheme: const AppBarTheme(
+          backgroundColor: Color(0xFF001144),
+          foregroundColor: Colors.white,
+        ),
+        bottomNavigationBarTheme: const BottomNavigationBarThemeData(
+          backgroundColor: Color(0xFF1E1E30),
+          selectedItemColor: Color(0xFF4D79FF),
+          unselectedItemColor: Colors.grey,
+        ),
+        switchTheme: SwitchThemeData(
+          thumbColor: WidgetStateProperty.resolveWith((states) {
+            if (states.contains(WidgetState.selected)) {
+              return const Color(0xFF4D79FF);
+            }
+            return Colors.grey;
+          }),
+          trackColor: WidgetStateProperty.resolveWith((states) {
+            if (states.contains(WidgetState.selected)) {
+              return const Color(0xFF4D79FF).withOpacity(0.5);
+            }
+            return Colors.grey.withOpacity(0.3);
+          }),
+        ),
+        useMaterial3: true,
+      ),
+      home: widget.isLoggedIn ? const HomeScreen() : const AuthScreen(),
     );
   }
 }

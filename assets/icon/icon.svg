@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024">
+  <rect width="1024" height="1024" rx="200" fill="#002366"/>
+  <text x="512" y="650" font-size="600" text-anchor="middle" fill="#FFD700">⚡</text>
+  <text x="512" y="820" font-size="120" text-anchor="middle" fill="white" font-family="Arial" font-weight="bold">ONE SHIFT</text>
+</svg>
