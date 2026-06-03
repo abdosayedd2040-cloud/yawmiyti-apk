@@ -130,7 +130,7 @@ class _AuthScreenState extends State<AuthScreen> {
           .eq('phone', phoneCtrl.text.trim());
 
       if (existing.isNotEmpty) {
-        showSnack('رقم الهاتف ده مسجل بالفعل');
+        showSnack('رقم الهاتف مسجل بالفعل');
         setState(() => loading = false);
         return;
       }
@@ -323,7 +323,7 @@ class _AuthScreenState extends State<AuthScreen> {
   Widget _buildLogin() {
     return Column(
       children: [
-        _field('رقم الهاتف أو اسم المستخدم', phoneCtrl,
+        _field('رقم الهاتف ', phoneCtrl,
             icon: Icons.phone, keyboard: TextInputType.text),
         _field('كلمة المرور', passwordCtrl,
             icon: Icons.lock, obscure: !showPass,
@@ -481,7 +481,7 @@ class _AuthScreenState extends State<AuthScreen> {
                 child: loading
                     ? const CircularProgressIndicator(color: Colors.white)
                     : Text(
-                        step < 3 ? 'التالي ←' : 'إنشاء الحساب ✅',
+                        step < 3 ? 'التالي ←' : 'إنشاء الحساب ',
                         style: const TextStyle(
                             fontWeight: FontWeight.bold,
                             color: Colors.white),

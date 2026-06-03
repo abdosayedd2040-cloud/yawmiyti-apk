@@ -6,142 +6,107 @@ import 'screens/home_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-
   await Supabase.initialize(
     url: 'https://ggzdxvoiwcbzwsvryoun.supabase.co',
     anonKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdnemR4dm9pd2NiendzdnJ5b3VuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg0MjA4OTUsImV4cCI6MjA5Mzk5Njg5NX0.gI-bfLg-lD8CoZmCU5wzinabPItDF-u-K8t67Lqxm2c',
   );
-
   final prefs = await SharedPreferences.getInstance();
   final String userId = prefs.getString('user_id') ?? '';
-  final bool isDark = prefs.getBool('dark_mode') ?? false;
-  final String lang = prefs.getString('language') ?? 'ar';
-
-  runApp(MyApp(
-    isLoggedIn: userId.isNotEmpty,
-    isDark: isDark,
-    language: lang,
-  ));
+  runApp(MyApp(isLoggedIn: userId.isNotEmpty));
 }
 
 final supabase = Supabase.instance.client;
 
-// Global key للتحكم في التطبيق
-final GlobalKey<_MyAppState> myAppKey = GlobalKey<_MyAppState>();
-
-class MyApp extends StatefulWidget {
+class MyApp extends StatelessWidget {
   final bool isLoggedIn;
-  final bool isDark;
-  final String language;
 
-  const MyApp({
-    super.key,
-    required this.isLoggedIn,
-    required this.isDark,
-    required this.language,
-  });
-
-  static _MyAppState? of(BuildContext context) =>
-      context.findAncestorStateOfType<_MyAppState>();
-
-  @override
-  State<MyApp> createState() => _MyAppState();
-}
-
-class _MyAppState extends State<MyApp> {
-  late bool isDark;
-  late String language;
-
-  @override
-  void initState() {
-    super.initState();
-    isDark = widget.isDark;
-    language = widget.language;
-  }
-
-  Future<void> toggleDark(bool value) async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setBool('dark_mode', value);
-    setState(() => isDark = value);
-  }
-
-  Future<void> toggleLanguage(String lang) async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setString('language', lang);
-    setState(() => language = lang);
-  }
+  const MyApp({super.key, required this.isLoggedIn});
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: language == 'ar' ? 'يوميتي - ون شيفت' : 'Yawmiyti - One Shift',
+      title: 'يوميتي - ون شيفت',
       debugShowCheckedModeBanner: false,
-      themeMode: isDark ? ThemeMode.dark : ThemeMode.light,
       theme: ThemeData(
         fontFamily: 'Cairo',
         brightness: Brightness.light,
-        colorScheme: ColorScheme.fromSeed(
-          seedColor: const Color(0xFF002366),
-          brightness: Brightness.light,
+        colorScheme: const ColorScheme.light(
+          primary: Color(0xFF002366),
+          secondary: Color(0xFF4a5568),
+          surface: Color(0xFFFFFFFF),
+          onPrimary: Colors.white,
+          onSecondary: Colors.white,
+          onSurface: Color(0xFF1A202C),
+          error: Color(0xFFdc2626),
         ),
         scaffoldBackgroundColor: const Color(0xFFF0F4F8),
         appBarTheme: const AppBarTheme(
           backgroundColor: Color(0xFF002366),
           foregroundColor: Colors.white,
-        ),
-        switchTheme: SwitchThemeData(
-          thumbColor: WidgetStateProperty.resolveWith((states) {
-            if (states.contains(WidgetState.selected)) {
-              return const Color(0xFF002366);
-            }
-            return Colors.grey;
-          }),
-          trackColor: WidgetStateProperty.resolveWith((states) {
-            if (states.contains(WidgetState.selected)) {
-              return const Color(0xFF002366).withOpacity(0.5);
-            }
-            return Colors.grey.withOpacity(0.3);
-          }),
-        ),
-        useMaterial3: true,
-      ),
-      darkTheme: ThemeData(
-        fontFamily: 'Cairo',
-        brightness: Brightness.dark,
-        colorScheme: ColorScheme.fromSeed(
-          seedColor: const Color(0xFF002366),
-          brightness: Brightness.dark,
-          surface: const Color(0xFF1A1A2E),
-          onSurface: Colors.white,
-        ),
-        scaffoldBackgroundColor: const Color(0xFF0F0F1A),
-        cardColor: const Color(0xFF1E1E30),
-        appBarTheme: const AppBarTheme(
-          backgroundColor: Color(0xFF001144),
-          foregroundColor: Colors.white,
+          elevation: 0,
+          centerTitle: true,
+          titleTextStyle: TextStyle(
+            fontFamily: 'Cairo',
+            fontSize: 18,
+            fontWeight: FontWeight.w600,
+            color: Colors.white,
+          ),
         ),
         bottomNavigationBarTheme: const BottomNavigationBarThemeData(
-          backgroundColor: Color(0xFF1E1E30),
-          selectedItemColor: Color(0xFF4D79FF),
-          unselectedItemColor: Colors.grey,
+          backgroundColor: Colors.white,
+          selectedItemColor: Color(0xFF002366),
+          unselectedItemColor: Color(0xFF718096),
+          elevation: 10,
+          type: BottomNavigationBarType.fixed,
         ),
-        switchTheme: SwitchThemeData(
-          thumbColor: WidgetStateProperty.resolveWith((states) {
-            if (states.contains(WidgetState.selected)) {
-              return const Color(0xFF4D79FF);
-            }
-            return Colors.grey;
-          }),
-          trackColor: WidgetStateProperty.resolveWith((states) {
-            if (states.contains(WidgetState.selected)) {
-              return const Color(0xFF4D79FF).withOpacity(0.5);
-            }
-            return Colors.grey.withOpacity(0.3);
-          }),
+        elevatedButtonTheme: ElevatedButtonThemeData(
+          style: ElevatedButton.styleFrom(
+            backgroundColor: const Color(0xFF002366),
+            foregroundColor: Colors.white,
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12)),
+            textStyle: const TextStyle(
+              fontFamily: 'Cairo',
+              fontSize: 16,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+        ),
+        inputDecorationTheme: InputDecorationTheme(
+          filled: true,
+          fillColor: const Color(0xFFF8FAFC),
+          contentPadding: const EdgeInsets.symmetric(
+              horizontal: 16, vertical: 14),
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(12),
+            borderSide: const BorderSide(color: Color(0xFFE2E8F0)),
+          ),
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(12),
+            borderSide: const BorderSide(color: Color(0xFFE2E8F0)),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(12),
+            borderSide:
+                const BorderSide(color: Color(0xFF002366), width: 2),
+          ),
+          labelStyle:
+              const TextStyle(color: Color(0xFF718096), fontSize: 13),
+          hintStyle:
+              const TextStyle(color: Color(0xFF718096), fontSize: 13),
+          prefixIconColor: const Color(0xFF718096),
+        ),
+        floatingActionButtonTheme: const FloatingActionButtonThemeData(
+          backgroundColor: Color(0xFF3b82f6),
+          foregroundColor: Colors.white,
+        ),
+        dividerTheme: const DividerThemeData(
+          color: Color(0xFFE2E8F0),
+          thickness: 1,
         ),
         useMaterial3: true,
       ),
-      home: widget.isLoggedIn ? const HomeScreen() : const AuthScreen(),
+      home: isLoggedIn ? const HomeScreen() : const AuthScreen(),
     );
   }
 }

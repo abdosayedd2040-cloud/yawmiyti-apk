@@ -56,7 +56,7 @@ class _ApplicantsScreenState extends State<ApplicantsScreen> {
       await supabase.from('notifications').insert({
         'user_id': app['worker_id'] ?? '',
         'type': 'application_accepted',
-        'title': '🎉 تم قبول طلبك!',
+        'title': ' تم قبول طلبك!',
         'body': 'مبروك! تم قبول طلبك. تواصل مع صاحب العمل الآن.',
         'is_read': false,
       });
@@ -64,7 +64,7 @@ class _ApplicantsScreenState extends State<ApplicantsScreen> {
       await supabase.from('notifications').insert({
         'user_id': app['worker_id'] ?? '',
         'type': 'application_rejected',
-        'title': '❌ تم رفض طلبك',
+        'title': ' تم رفض طلبك',
         'body': 'للأسف تم رفض طلبك. حاول التقديم على شيفتات أخرى.',
         'is_read': false,
       });
@@ -73,7 +73,7 @@ class _ApplicantsScreenState extends State<ApplicantsScreen> {
     await _loadApplicants();
     if (!mounted) return;
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-      content: Text(status == 'accepted' ? '✅ تم القبول' : '❌ تم الرفض'),
+      content: Text(status == 'accepted' ? ' تم القبول' : ' تم الرفض'),
       backgroundColor: status == 'accepted' ? Colors.green : Colors.red,
     ));
   } catch (e) {
@@ -219,7 +219,7 @@ class _ApplicantsScreenState extends State<ApplicantsScreen> {
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10)),
                     ),
-                    child: const Text('قبول ✅',
+                    child: const Text('قبول ',
                         style: TextStyle(color: Colors.white)),
                   ),
                 ),
@@ -292,7 +292,7 @@ await supabase.from('shifts').update({
                 children: [
                   Icon(Icons.check_circle, color: Colors.blue, size: 16),
                   SizedBox(width: 6),
-                  Text('تم إنهاء الشيفت بنجاح ✅',
+                  Text('تم إنهاء الشيفت بنجاح ',
                       style: TextStyle(
                           color: Colors.blue, fontWeight: FontWeight.bold)),
                 ],
@@ -326,7 +326,7 @@ await supabase.from('shifts').update({
                 ),
               )
             else
-              const Text('✅ تم تقييم العامل',
+              const Text(' تم تقييم العامل',
                   style: TextStyle(color: Colors.green)),
           ] else ...[
             Container(

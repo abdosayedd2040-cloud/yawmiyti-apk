@@ -1,9 +1,9 @@
+import '../main.dart';
 import 'legal_screen.dart';
 import 'admin_screen.dart';
 import 'profile_completion_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import '../main.dart';
 import 'auth_screen.dart';
 
 const royalBlue = Color(0xFF002366);
@@ -231,59 +231,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
                       const SizedBox(height: 12),
 
-                      // الإعدادات
-                      _section('الإعدادات', [
-                        // الوضع الليلي
-Padding(
-  padding: const EdgeInsets.symmetric(vertical: 6),
-  child: Row(
-    children: [
-      const Icon(Icons.dark_mode_outlined, size: 18, color: royalBlue),
-      const SizedBox(width: 10),
-      const Expanded(
-        child: Text('الوضع الليلي', style: TextStyle(fontSize: 14)),
-      ),
-      Switch(
-        value: MyApp.of(context)?.isDark ?? false,
-        onChanged: (val) async {
-          await MyApp.of(context)?.toggleDark(val);
-          setState(() {});
-        },
-      ),
-    ],
-  ),
-),
-
-// اللغة
-Padding(
-  padding: const EdgeInsets.symmetric(vertical: 6),
-  child: Row(
-    children: [
-      const Icon(Icons.language_outlined, size: 18, color: royalBlue),
-      const SizedBox(width: 10),
-      const Expanded(
-        child: Text('اللغة / Language', style: TextStyle(fontSize: 14)),
-      ),
-      DropdownButton<String>(
-        value: MyApp.of(context)?.language ?? 'ar',
-        underline: const SizedBox(),
-        items: const [
-          DropdownMenuItem(value: 'ar', child: Text('العربية')),
-          DropdownMenuItem(value: 'en', child: Text('English')),
-        ],
-        onChanged: (val) async {
-          if (val != null) {
-            await MyApp.of(context)?.toggleLanguage(val);
-            setState(() {});
-          }
-        },
-      ),
-    ],
-  ),
-),
-                      ]),
-                      const SizedBox(height: 12),
-
                       // المركز القانوني
                       _section('المركز القانوني', [
                         _menuItem(Icons.gavel_outlined, 'الشروط والسياسات',
@@ -294,33 +241,6 @@ Padding(
                                   builder: (_) => const LegalScreen()));
                         }),
                       ]),
-
-                      // زرار الأدمن
-                      if (profile['phone'] == '01124564630') ...[
-                        const SizedBox(height: 12),
-                        SizedBox(
-                          width: double.infinity,
-                          child: ElevatedButton.icon(
-                            onPressed: () => Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (_) => const AdminScreen())),
-                            icon: const Icon(Icons.admin_panel_settings,
-                                color: Colors.white),
-                            label: const Text('لوحة الأدمن 🛡️',
-                                style: TextStyle(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.bold)),
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: const Color(0xFF1E40AF),
-                              padding: const EdgeInsets.symmetric(
-                                  vertical: 14),
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(12)),
-                            ),
-                          ),
-                        ),
-                      ],
 
                       const SizedBox(height: 24),
 

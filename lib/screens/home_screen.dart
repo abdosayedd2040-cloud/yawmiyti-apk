@@ -162,7 +162,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text('أهلاً، $name 👋',
+                        Text('أهلاً، $name ',
                             style: const TextStyle(
                                 fontSize: 18,
                                 fontWeight: FontWeight.bold,
@@ -170,8 +170,8 @@ class _HomeScreenState extends State<HomeScreen> {
                         const SizedBox(height: 4),
                         Text(
                           userType == 'worker'
-                              ? '👷 عامل / صنايعي'
-                              : '💼 صاحب عمل',
+                              ? ' عامل / صنايعي'
+                              : ' صاحب عمل',
                           style: const TextStyle(
                               fontSize: 13, color: Color(0xFF93C5FD)),
                         ),
